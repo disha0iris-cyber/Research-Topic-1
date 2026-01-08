@@ -99,3 +99,13 @@ if __name__ == "__main__":
 
     print("\nSummary Report")
     print(summary_report(df))
+
+
+
+The data.py module provides a complete statistical and exploratory analysis of the simulated network traffic dataset.
+
+The results confirm that network traffic is heterogeneous, time-varying, and uncertain. Video services dominate bandwidth usage and exhibit high variance, while API and analytics traffic show different stability and burstiness characteristics.
+
+The analysis also reveals that QoS violations increase significantly when network utilization grows, confirming that performance degradation is not linear.
+
+These findings justify the need for predictive and robust resource allocation mechanisms, forming the analytical foundation of the proposed solution.
