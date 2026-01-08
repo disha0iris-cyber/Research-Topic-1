@@ -47,3 +47,4 @@ a summary table showing the demand and allocated bandwidth for each service
 a final graph comparing service demand with allocated bandwidth
 
 This file serves as the main entry point of the project and demonstrates how robust optimization can be used to manage network traffic under uncertainty.
+
