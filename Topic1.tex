@@ -1,0 +1,144 @@
+# ML-Driven Network Resource Allocation with Robust Optimization
+
+## 1. Scope and Objective of the Research
+
+This research addresses the problem of dynamic network resource allocation in cloud and software-defined networks under uncertain and time-varying traffic demand. The objective is to evaluate how data-driven traffic analysis and optimization techniques can be combined to reduce Quality of Service (QoS) violations while maintaining efficient utilization of limited network capacity.
+
+The study focuses on a simulated network environment with heterogeneous services, where each service exhibits different traffic characteristics, priorities, and sensitivity to congestion.
+
+---
+
+## 2. Description of the Network Scenario
+
+The network scenario is based on a shared backbone with a fixed total capacity of **900 Mbps**, serving three distinct service classes:
+
+* **Video services**: high bandwidth demand, strong variability, strict QoS requirements
+* **API services**: moderate demand, relatively stable traffic, latency-sensitive
+* **Analytics services**: bursty traffic, less predictable demand patterns
+
+Each service competes for the same limited network resources, creating contention during peak demand periods.
+
+---
+
+## 3. Dataset Design and Structure (`network_simulated_data.csv`)
+
+The dataset used in this research is a simulated representation of real network monitoring data. It was generated to reflect realistic demand distributions, temporal variations, and service heterogeneity observed in modern cloud networks.
+
+### 3.1 Dataset Fields
+
+Each row of the dataset represents a service-level observation at a given time and includes the following fields:
+
+* `service`: service type (video, api, analytics)
+* `hour`: hour of the day (0–23)
+* `demand_mbps`: requested bandwidth
+* `allocated_mbps`: bandwidth allocated by the network
+* `total_network_demand`: aggregate demand across all services
+* `total_capacity_mbps`: total network capacity (900 Mbps)
+* `network_utilization`: ratio of total demand to capacity
+* `latency_ms`: observed latency
+* `max_latency_ms`: maximum allowed latency
+* `qos_violated`: binary QoS violation indicator
+* `latency_violation`: latency-specific violation
+* `bandwidth_violation`: bandwidth-specific violation
+* `allocation_cost`: cost proportional to allocated bandwidth
+* `violation_cost`: penalty for QoS violation
+* `total_cost`: combined operational cost
+* `priority`: service priority level
+
+### 3.2 Practical Example
+
+During peak hours, the dataset shows that video demand frequently exceeds 200 Mbps, while total network demand approaches capacity. In such cases, the allocation mechanism is forced to reduce bandwidth for lower-priority services, leading to QoS violations that are explicitly recorded in the dataset.
+
+---
+
+## 4. Data Analysis Layer (`data.py`)
+
+The `data.py` module implements the analytical foundation of the research. It processes the dataset and extracts quantitative evidence about traffic behavior and network performance.
+
+### 4.1 Traffic Characterization
+
+Statistical analysis of `demand_mbps` reveals that video traffic has the highest mean and variance, confirming its dominant impact on network congestion. API traffic exhibits lower variance, while analytics traffic shows bursty behavior with occasional spikes.
+
+### 4.2 Temporal Patterns
+
+Hourly aggregation of total network demand demonstrates a clear diurnal pattern, with higher utilization during daytime and evening hours. These patterns highlight the limitations of static allocation strategies.
+
+### 4.3 QoS and Utilization Analysis
+
+By correlating `network_utilization` with `qos_violated`, the analysis shows that QoS violations increase rapidly as utilization grows. This relationship is non-linear, indicating that congestion effects intensify beyond certain thresholds rather than increasing gradually.
+
+### 4.4 Cost Analysis
+
+The cost model links technical performance to economic impact. Even moderate increases in QoS violations lead to disproportionately high violation costs, emphasizing the need for preventive allocation strategies.
+
+---
+
+## 5. Optimization Layer (`optimization.py`)
+
+The `optimization.py` module implements and evaluates multiple resource allocation strategies under the same network conditions.
+
+### 5.1 Baseline Allocation
+
+The baseline strategy allocates bandwidth proportionally to service priority. This reflects traditional static network management approaches. While simple, this strategy fails to adapt to changing demand and leads to inefficient utilization during off-peak periods.
+
+### 5.2 Nominal (ML-Based) Allocation
+
+The nominal strategy allocates resources proportionally to observed demand, assuming accurate demand estimation. In practice, this approach achieves high utilization but performs poorly when demand is underestimated, resulting in frequent QoS violations during traffic spikes.
+
+### 5.3 Robust Allocation
+
+The robust strategy incorporates an uncertainty margin into the allocation process by assuming worst-case demand within a bounded range. This leads to slightly more conservative allocations but significantly reduces QoS violations.
+
+### 5.4 Practical Comparison
+
+When applied to the dataset:
+
+* Nominal allocation achieves the highest utilization but incurs high violation costs
+* Baseline allocation underutilizes resources
+* Robust allocation balances utilization and reliability, minimizing total cost
+
+---
+
+## 6. Evaluation Metrics and Results
+
+The strategies are compared using:
+
+* Average network utilization
+* QoS violation rate
+* Total operational cost
+
+The results consistently show that robust allocation achieves the lowest total cost by reducing violation penalties, even though it sacrifices a small amount of utilization efficiency.
+
+---
+
+## 7. Interpretation of Results
+
+The experimental results demonstrate that uncertainty is the dominant factor affecting network performance. Allocation strategies that ignore uncertainty perform well only under ideal conditions, while robust strategies maintain acceptable performance across a wide range of traffic scenarios.
+
+This confirms that robustness is not an optional enhancement but a fundamental requirement for reliable network resource management.
+
+---
+
+## 8. Final Research Conclusions
+
+This research shows that:
+
+* Network traffic is inherently uncertain and heterogeneous
+* Machine learning-based allocation alone is fragile
+* Robust optimization significantly improves QoS reliability
+* The combination of data-driven analysis and robustness yields the best overall performance
+
+The implemented framework serves as a practical and reproducible demonstration of how robust optimization enhances ML-driven network traffic management under realistic conditions.
+
+---
+
+## 9. Relevance and Applicability
+
+Although the system is a simulation, the modeling choices, metrics, and conclusions directly apply to real-world cloud and SDN environments. The framework can be extended to real-time controllers and integrated with predictive ML models.
+
+---
+
+## 10. Summary
+
+The project provides a complete pipeline, from data generation and analysis to optimization and evaluation, offering a coherent solution to the network resource allocation problem under uncertainty.
+
