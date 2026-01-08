@@ -1,0 +1,90 @@
+import pandas as pd
+import numpy as np
+
+np.random.seed(1)
+
+SERVICES = ["video", "api", "analytics"]
+CAPACITY = 900
+HOURS = 24
+SAMPLES_PER_HOUR = 180
+
+rows = []
+
+for hour in range(HOURS):
+    for _ in range(SAMPLES_PER_HOUR):
+        video = max(0, np.random.normal(90, 45))
+        api = max(0, np.random.normal(35, 15))
+        analytics = max(0, np.random.normal(25, 18))
+
+        demands = {
+            "video": video,
+            "api": api,
+            "analytics": analytics
+        }
+
+        total_demand = sum(demands.values())
+        utilization = total_demand / CAPACITY
+
+        for service in SERVICES:
+            demand = demands[service]
+            allocated = min(demand, CAPACITY * demand / total_demand)
+
+            latency = np.random.normal(40 + utilization * 60, 10)
+            max_latency = 100
+
+            qos_violated = int(
+                allocated < demand or latency > max_latency
+            )
+
+            rows.append([
+                service,
+                hour,
+                demand,
+                allocated,
+                total_demand,
+                CAPACITY,
+                utilization,
+                latency,
+                max_latency,
+                qos_violated,
+                int(latency > max_latency),
+                int(allocated < demand),
+                allocated * 0.1,
+                qos_violated * 50,
+                allocated * 0.1 + qos_violated * 50,
+                3 if service == "video" else 2 if service == "api" else 1
+            ])
+
+df = pd.DataFrame(rows, columns=[
+    "service",
+    "hour",
+    "demand_mbps",
+    "allocated_mbps",
+    "total_network_demand",
+    "total_capacity_mbps",
+    "network_utilization",
+    "latency_ms",
+    "max_latency_ms",
+    "qos_violated",
+    "latency_violation",
+    "bandwidth_violation",
+    "allocation_cost",
+    "violation_cost",
+    "total_cost",
+    "priority"
+])
+
+df.to_csv("network_simulated_data.csv", index=False)
+
+
+The simulated dataset represents a realistic cloud network scenario with heterogeneous services, limited capacity, QoS constraints, and economic cost modeling.
+
+Traffic demand distributions and temporal variations were designed to reflect real-world behavior observed in modern cloud infrastructures.
+
+The dataset enables systematic evaluation of resource allocation strategies and serves as a reproducible benchmark for analyzing the impact of uncertainty on network performance.
+
+
+
+
+
+
