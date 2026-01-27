@@ -1,3 +1,4 @@
+MODULE 3 – Machine Learning Approaches
 Questions  & Answers
 
 What forecasting methods are appropriate? • When are simple methods sufficient? Simple methods such as Moving Average or ARIMA are sufficient for short-term forecasting of stable services.
